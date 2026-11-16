@@ -25,7 +25,7 @@ The game does not tell mods how long a song is, so "listened" is the time you ac
 
 ## Install
 
-1. Zip the contents of this repository (`modDesc.xml` at the top level of the zip) as `FS25_RadioLog.zip`.
+1. Download `FS25_RadioLog.zip` from the [latest release](https://github.com/kendolin/FS25_RadioLog/releases/latest).
 2. Put the zip in `Documents/My Games/FarmingSimulator2025/mods/`. Do not unzip it.
 3. Enable the mod in your savegame.
 
@@ -44,3 +44,7 @@ Edit the values at the top of `scripts/RadioLog.lua`:
 | `HUD_BOX_COLOR` | `{0, 0, 0, 0.75}` | Box colour. The last number is how solid it is. |
 | `MIN_LISTEN_SECONDS` | `5` | Songs heard for less than this are left out of the log. |
 | `LOG_RADIO_OFF` | `true` | Write a `RADIO OFF` line when the radio stops. |
+
+## License
+
+[MIT](LICENSE)
