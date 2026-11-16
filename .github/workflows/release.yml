@@ -1,0 +1,38 @@
+name: Release
+
+# Pushing a version tag (for example v1.2.0.0) builds the mod zip and publishes a GitHub release with it.
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the tag matches the version in modDesc.xml
+        run: |
+          version=$(grep -oP '(?<=<version>)[^<]+' modDesc.xml)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match modDesc.xml version $version"
+            exit 1
+          fi
+
+      - name: Build the mod zip
+        run: |
+          zip_name="${GITHUB_REPOSITORY#*/}.zip"
+          zip -r "$zip_name" modDesc.xml *.dds scripts LICENSE
+          echo "ZIP_NAME=$zip_name" >> "$GITHUB_ENV"
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$ZIP_NAME" \
+            --title "${GITHUB_REPOSITORY#*/} ${GITHUB_REF_NAME#v}" \
+            --notes "Download \`$ZIP_NAME\` below and put it in \`Documents/My Games/FarmingSimulator2025/mods/\` without unzipping it. Keep the file name exactly as it is. See the README for what the mod does."
