@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<modDesc descVersion="107">
+    <author>kendolin</author>
+    <version>1.4.0.0</version>
+    <title>
+        <en>Radio Log</en>
+    </title>
+    <description>
+        <en><![CDATA[Shows the current radio station and song on the HUD, and keeps a daily log of everything you listened to.
+
+- Station and song are shown at the bottom centre of the screen in a dark box while the radio is playing.
+- Every song is logged with how it started (you switched station / next song), how long you listened and how it ended (played to the end / you switched away), plus your total time per station. Songs heard for less than 5 seconds (flicking through stations) are left out. Daily text file:
+  Documents/My Games/FarmingSimulator2025/modSettings/RadioLog/YYYY-MM-DD.txt
+- Works with the built-in stations and online radio streams.
+- Client only: works in multiplayer without affecting other players.]]></en>
+    </description>
+    <iconFilename>icon_RadioLog.dds</iconFilename>
+    <multiplayer supported="true"/>
+
+    <extraSourceFiles>
+        <sourceFile filename="scripts/RadioLog.lua"/>
+    </extraSourceFiles>
+</modDesc>
