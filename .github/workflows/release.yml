@@ -1,10 +1,13 @@
 name: Release
 
-# Pushing a version tag (for example v1.2.0.0) builds the mod zip and publishes a GitHub release with it.
+# Builds the mod zip and publishes a GitHub release with it.
+# Runs when a version tag (for example v1.2.0.0) is pushed, or by hand from the
+# Actions tab ("Run workflow"), which releases the version in modDesc.xml.
 on:
   push:
     tags:
       - "v*"
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -15,13 +18,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check the tag matches the version in modDesc.xml
+      - name: Work out the release tag from modDesc.xml
         run: |
           version=$(grep -oP '(?<=<version>)[^<]+' modDesc.xml)
-          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+          tag="v$version"
+          if [ "$GITHUB_REF_TYPE" = "tag" ] && [ "$tag" != "$GITHUB_REF_NAME" ]; then
             echo "Tag $GITHUB_REF_NAME does not match modDesc.xml version $version"
             exit 1
           fi
+          echo "VERSION=$version" >> "$GITHUB_ENV"
+          echo "TAG=$tag" >> "$GITHUB_ENV"
 
       - name: Build the mod zip
         run: |
@@ -33,6 +39,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release create "$GITHUB_REF_NAME" "$ZIP_NAME" \
-            --title "${GITHUB_REPOSITORY#*/} ${GITHUB_REF_NAME#v}" \
+          gh release create "$TAG" "$ZIP_NAME" \
+            --target "$GITHUB_SHA" \
+            --title "${GITHUB_REPOSITORY#*/} $VERSION" \
             --notes "Download \`$ZIP_NAME\` below and put it in \`Documents/My Games/FarmingSimulator2025/mods/\` without unzipping it. Keep the file name exactly as it is. See the README for what the mod does."
